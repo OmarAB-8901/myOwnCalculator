@@ -7,34 +7,57 @@ let deleteNumber = screen => {
 }
 
 function activateButtons(num) {
-    let btnPressed = document.querySelector('.btn_' + num.key.toLowerCase()).classList;
+  console.log( num );
+    let btnPressed = document.querySelector('.btn_' + num).classList;
     btnPressed.toggle('active');
     setTimeout(() => {
         btnPressed.toggle('active');
-    }, 150);
+    }, 100);
 }
 
-let addNumber = (screen, num) => { screen.value == 0 ? screen.value = num : screen.value += num; }
+let addNumber = (screen, num) => screen.value == 0 ? screen.value = num : screen.value += num;
 
-let validateInput = input => {
+let bodyValidateInput = input => {
     console.log(input);
     let screenNumbers = document.getElementById('screenNumbers');
 
     let regexNumbers = new RegExp("[0-9/*+./-]");
     let isNumber = regexNumbers.test(input.key);
 
-    if (isNumber) {
-        activateButtons(input);
+    if (isNumber)
         addNumber(screenNumbers, input.key)
-    }
 
-    let regexbackSpace = new RegExp("backspace");
-    let isBackSpace = regexbackSpace.test(input.key.toLowerCase());
+    let regexbackSpace = new RegExp("Backspace");
+    let isBackSpace = regexbackSpace.test(input.key);
 
     if (isBackSpace)
         deleteNumber(screenNumbers)
 
+    if(isNumber || isBackSpace)
+      activateButtons(input.key.toLowerCase());
+
     // debugger
 }
 
-document.querySelector('body').addEventListener('keyup', validateInput);
+let clickValidateInput = input => {
+  console.log(input.target.dataset.btntype);
+  input = input.target.dataset.btntype;
+  let screenNumbers = document.getElementById('screenNumbers');
+
+  let regexNumbers = new RegExp("[0-9/*+./-]");
+  let isNumber = regexNumbers.test(input);
+
+  if (isNumber)
+      addNumber(screenNumbers, input)
+
+  let regexbackSpace = new RegExp("backspace");
+  let isBackSpace = regexbackSpace.test(input);
+
+  if (isBackSpace)
+      deleteNumber(screenNumbers)
+
+  // debugger
+}
+
+document.querySelector('body').addEventListener('keyup', bodyValidateInput);
+document.querySelectorAll('.btn').forEach( function(btn) { /* console.log( btn, btn.dataset.btntype ); */ btn.addEventListener('click', clickValidateInput); } );
